@@ -11,6 +11,6 @@ import org.springframework.context.annotation.PropertySource;
 @SuppressWarnings("resource")
 public class Application {
 	public static void main(String[] args) {
-		new AnnotationConfigApplicationContext(Application.class).getBean(Application.class);
+		new AnnotationConfigApplicationContext(Application.class);
 	}
 }
