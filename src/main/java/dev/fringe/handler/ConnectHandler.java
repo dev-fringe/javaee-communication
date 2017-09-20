@@ -4,8 +4,10 @@ import org.springframework.stereotype.Component;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.ChannelHandler.Sharable;
 
 @Component
+@Sharable 
 public class ConnectHandler extends ChannelInboundHandlerAdapter {
 	
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {

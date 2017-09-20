@@ -50,7 +50,7 @@ public class SocketServer {
 
 	@PostConstruct
 	public void start() throws Exception {
-		serverChannel = serverBootstrap().bind(new InetSocketAddress(9090)).sync().channel().closeFuture().sync().channel();
+		serverChannel = serverBootstrap().bind(new InetSocketAddress(port)).sync().channel().closeFuture().sync().channel();
 	}
 
 	@PreDestroy
