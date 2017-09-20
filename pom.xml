@@ -12,17 +12,16 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 			<version>4.3.11.RELEASE</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework</groupId>
-					<artifactId>spring-expression</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>io.netty</groupId>
 			<artifactId>netty-all</artifactId>
-			<version>4.0.28.Final</version>
+			<version>4.1.15.Final</version>
+		</dependency>
+		<dependency>
+		    <groupId>io.netty</groupId>
+		    <artifactId>netty-handler</artifactId>
+		    <version>4.1.15.Final</version>
 		</dependency>
 	</dependencies>
 
