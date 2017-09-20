@@ -1,30 +1,16 @@
 package dev.fringe;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ImportResource;
-
-import dev.fringe.socket.SocketServer;
+import org.springframework.context.annotation.PropertySource;
 
 @ComponentScan
-@ImportResource(value = { "classpath:/app.xml" })
+@ImportResource("classpath:/app.xml")
+@PropertySource("classpath:/app.properties")
+@SuppressWarnings("resource")
 public class Application {
-
-	@Autowired
-	private SocketServer socketServer;
-
-	@SuppressWarnings("resource")
 	public static void main(String[] args) {
-		new AnnotationConfigApplicationContext(Application.class).getBean(Application.class).run(args);
+		new AnnotationConfigApplicationContext(Application.class).getBean(Application.class);
 	}
-
-	public void run(String[] args) {
-		try {
-			socketServer.start();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 }
