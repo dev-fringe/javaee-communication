@@ -1,6 +1,7 @@
 package dev.fringe.channel;
 
 import java.util.HashMap;
+
 import io.netty.channel.Channel;
 
 public class ApplicationChannelRepository {

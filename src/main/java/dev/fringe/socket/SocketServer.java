@@ -26,80 +26,83 @@ import io.netty.handler.logging.LoggingHandler;
 @Configuration
 public class SocketServer {
 
-    private int tcpPort = 9090;
+	private int tcpPort = 9090;
 
-    private int bossCount = 10;
+	private int bossCount = 10;
 
-    private int workerCount = 10;
-	
-    private boolean keepAlive = true;
+	private int workerCount = 10;
 
-    private int backlog = 1000;
-    
-    @Autowired
-    private ApplicationChannelInitializer applicationChannelInitializer;
-    
-    @Autowired
-    private ServerBootstrap serverBootstrap;
+	private boolean keepAlive = true;
 
-    @Autowired
-    private InetSocketAddress tcpSocketAddress;
+	private int backlog = 1000;
 
-    private Channel serverChannel;
+	@Autowired
+	private ApplicationChannelInitializer applicationChannelInitializer;
 
-    @SuppressWarnings("unchecked")
-    @Bean(name = "serverBootstrap")
-    public ServerBootstrap bootstrap() {
-        ServerBootstrap b = new ServerBootstrap();
-        b.group(new NioEventLoopGroup(bossCount), new NioEventLoopGroup(workerCount)).channel(NioServerSocketChannel.class).handler(new LoggingHandler(LogLevel.DEBUG)).childHandler(applicationChannelInitializer);
-        Map<ChannelOption<?>, Object> tcpChannelOptions = tcpChannelOptions();
-        Set<ChannelOption<?>> keySet = tcpChannelOptions.keySet();
-        for (@SuppressWarnings("rawtypes") ChannelOption option : keySet) {
-            b.option(option, tcpChannelOptions.get(option));
-        }
-        return b;
-    }
+	@Autowired
+	private ServerBootstrap serverBootstrap;
+
+	@Autowired
+	private InetSocketAddress tcpSocketAddress;
+
+	private Channel serverChannel;
+
+	@SuppressWarnings("unchecked")
+	@Bean(name = "serverBootstrap")
+	public ServerBootstrap bootstrap() {
+		ServerBootstrap b = new ServerBootstrap();
+		b.group(new NioEventLoopGroup(bossCount), new NioEventLoopGroup(workerCount))
+				.channel(NioServerSocketChannel.class).handler(new LoggingHandler(LogLevel.DEBUG))
+				.childHandler(applicationChannelInitializer);
+		Map<ChannelOption<?>, Object> tcpChannelOptions = tcpChannelOptions();
+		Set<ChannelOption<?>> keySet = tcpChannelOptions.keySet();
+		for (@SuppressWarnings("rawtypes")
+		ChannelOption option : keySet) {
+			b.option(option, tcpChannelOptions.get(option));
+		}
+		return b;
+	}
+
+	public Map<ChannelOption<?>, Object> tcpChannelOptions() {
+		Map<ChannelOption<?>, Object> options = new HashMap<ChannelOption<?>, Object>();
+		options.put(ChannelOption.SO_KEEPALIVE, keepAlive);
+		options.put(ChannelOption.SO_BACKLOG, backlog);
+		return options;
+	}
+
 	@Bean
-    public Map<ChannelOption<?>, Object> tcpChannelOptions() {
-        Map<ChannelOption<?>, Object> options = new HashMap<ChannelOption<?>, Object>();
-        options.put(ChannelOption.SO_KEEPALIVE, keepAlive);
-        options.put(ChannelOption.SO_BACKLOG, backlog);
-        return options;
-    }
+	public InetSocketAddress tcpSocketAddress() {
+		return new InetSocketAddress(tcpPort);
+	}
 
-    @Bean
-    public InetSocketAddress tcpSocketAddress() {
-        return new InetSocketAddress(tcpPort);
-    }
+	@Bean
+	public ApplicationChannelRepository channelRepository() {
+		return new ApplicationChannelRepository();
+	}
 
-    @Bean
-    public ApplicationChannelRepository channelRepository() {
-        return new ApplicationChannelRepository();
-    }
-    
-    public void start() throws Exception {
-        serverChannel =  serverBootstrap.bind(tcpSocketAddress).sync().channel().closeFuture().sync().channel();
-    }
+	public void start() throws Exception {
+		serverChannel = serverBootstrap.bind(tcpSocketAddress).sync().channel().closeFuture().sync().channel();
+	}
 
-    @PreDestroy
-    public void stop() throws Exception {
-        serverChannel.close();
-        serverChannel.parent().close();
-    }
+	@PreDestroy
+	public void stop() throws Exception {
+		serverChannel.close();
+		serverChannel.parent().close();
+	}
 
-    public ServerBootstrap getServerBootstrap() {
-        return serverBootstrap;
-    }
+	public ServerBootstrap getServerBootstrap() {
+		return serverBootstrap;
+	}
 
-    public void setServerBootstrap(ServerBootstrap serverBootstrap) {
-        this.serverBootstrap = serverBootstrap;
-    }
+	public void setServerBootstrap(ServerBootstrap serverBootstrap) {
+		this.serverBootstrap = serverBootstrap;
+	}
 
-    public InetSocketAddress getTcpSocketAddress() {
-        return tcpSocketAddress;
-    }
+	public InetSocketAddress getTcpSocketAddress() {
+		return tcpSocketAddress;
+	}
 
-    public void setTcpSocketAddress(InetSocketAddress tcpSocketAddress) {
-        this.tcpSocketAddress = tcpSocketAddress;
-    }
+	public void setTcpSocketAddress(InetSocketAddress tcpSocketAddress) {
+		this.tcpSocketAddress = tcpSocketAddress;
+	}
 }
